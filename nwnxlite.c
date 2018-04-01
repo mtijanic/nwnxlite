@@ -31,7 +31,7 @@ void parse_config() {
 
 // Original functions
 uint32_t   (__fastcall *CNWSScriptVarTable__GetObject)(CNWSScriptVarTable* thisPtr, int edx, CExoString* name);
-CExoString (__fastcall *CNWSScriptVarTable__GetString)(CNWSScriptVarTable* thisPtr, int edx, CExoString* result, CExoString* name);
+CExoString*(__fastcall *CNWSScriptVarTable__GetString)(CNWSScriptVarTable* thisPtr, int edx, CExoString* result, CExoString* name);
 void       (__fastcall *CNWSScriptVarTable__SetString)(CNWSScriptVarTable* thisPtr, int edx, CExoString* name,   CExoString* value);
 
 void SQLExecDirect(char *name, char *value);
@@ -54,11 +54,11 @@ struct {
 	const char *cmd;
 	GetObjectHandler handler;
 } get_object_handlers[] = {
-	{ "test", NULL }
+	{ "CRASH", NULL }
 };
 
 uint32_t __fastcall hook_GetObject(CNWSScriptVarTable* thisPtr, int edx, CExoString* name) {
-	LOG_INFO("GetObject(\"%s\")", name->m_sString);
+	LOG_DEBUG("GetObject(\"%s\")", name->m_sString);
 	if (!strncmp(name->m_sString, "NWNXLITE!", 9)) {
 		char *cmd = name->m_sString + 9;
 		for (int i = 0; i < count_of(get_object_handlers); i++) {
@@ -70,14 +70,17 @@ uint32_t __fastcall hook_GetObject(CNWSScriptVarTable* thisPtr, int edx, CExoStr
 	return CNWSScriptVarTable__GetObject(thisPtr, edx, name);
 }
 
-CExoString __fastcall hook_GetString(CNWSScriptVarTable* thisPtr, int edx, CExoString* result, CExoString* name) {
-	LOG_INFO("GetString(\"%s\")\n", name->m_sString);
+CExoString *__fastcall hook_GetString(CNWSScriptVarTable* thisPtr, int edx, CExoString* result, CExoString* name) {
+	LOG_DEBUG("GetString(\"%s\")", name->m_sString);
 	if (!strncmp(name->m_sString, "NWNXLITE!", 9)) {
 		char *cmd = name->m_sString + 9;
 		for (int i = 0; i < count_of(get_string_handlers); i++) {
 			if (!strncmp(cmd, get_string_handlers[i].cmd, strlen(get_string_handlers[i].cmd))) {
-				*result = make_cexostr(get_string_handlers[i].handler(cmd));
-				return *result;
+				CExoString cexostr = make_cexostr(get_string_handlers[i].handler(cmd));
+				LOG_DEBUG("Returned %s (%p), length %d, result:%p", cexostr.m_sString, cexostr.m_sString, cexostr.m_nBufferLength, result);
+				CNWSScriptVarTable__SetString(thisPtr, edx, name, &cexostr);
+				free(cexostr.m_sString);
+				break;
 			}
 		}
 	}
@@ -85,7 +88,7 @@ CExoString __fastcall hook_GetString(CNWSScriptVarTable* thisPtr, int edx, CExoS
 }
 void __fastcall hook_SetString(CNWSScriptVarTable* thisPtr, int edx, CExoString* name, CExoString* value)
 {
-	LOG_INFO("SetString(\"%s\", \"%s\")\n", name->m_sString, value->m_sString);
+	LOG_DEBUG("SetString(\"%s\", \"%s\")", name->m_sString, value->m_sString);
 	if (!strncmp(name->m_sString, "NWNXLITE!", 9)) {
 		char *cmd = name->m_sString + 9;
 		for (int i = 0; i < count_of(set_string_handlers); i++) {

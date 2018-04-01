@@ -24,6 +24,7 @@ static struct {
 #define STORE_ERROR() (strcpy(sql.lastError, mysql_error(&sql.mysql)))
 
 void sql_init() {
+	LOG_INFO("SQL init");
 	mysql_init(&sql.mysql);
 
 	if (!mysql_real_connect(&sql.mysql, cfg.host, cfg.username, cfg.password, cfg.database, 0, NULL, 0)) {
@@ -32,6 +33,7 @@ void sql_init() {
 }
 void sql_shutdown() {
 	mysql_close(&sql.mysql);
+	LOG_INFO("SQL shutdown");
 }
 int sql_is_connected() {
 	int res = mysql_query(&sql.mysql, "SELECT 1") == 0;
@@ -48,13 +50,15 @@ void sql_destroy_prepared_query() {
 	sql.stmt = NULL;
 }
 int sql_prepare_query(const char *query) {
+	LOG_INFO("SQL prepare query: %s", query);
 	if (sql.stmt) {
+		LOG_INFO("Destroying previous query");
 		sql_destroy_prepared_query();
 	}
 
 	sql.stmt = mysql_stmt_init(&sql.mysql);
 	if (!sql.stmt) {
-		LOG_ERROR("Failed to prepare statement: %s", STORE_ERROR());
+		LOG_ERROR("Failed to initialize statement: %s", STORE_ERROR());
 		return 0;
 	}
 
@@ -110,18 +114,21 @@ int sql_read_next_row() {
 	if (fetchResult == MYSQL_NO_DATA) {
 		return 0;
 	}
-	else if (fetchResult) {
+	else if (fetchResult == 1) {
 		LOG_ERROR("Error executing mysql_stmt_fetch - error: '%s'", STORE_ERROR());
 		return 0;
 	}
 
 	for (int i = 0; i < sql.columns; i++) {
-		sql.resultBuffer[i] = realloc(sql.resultBuffer[i], sql.lengths[i]);
-		assert(sql.resultBuffer[i]);
+		sql.resultBuffer[i] = realloc(sql.resultBuffer[i], sql.lengths[i] + 1);
+		//assert(sql.resultBuffer[i]);
+		LOG_INFO("Column %d of %d, length %d; res: %p", i, sql.columns, sql.lengths[i], sql.resultBuffer[i]);
 		
 		sql.binds[i].buffer = sql.resultBuffer[i];
 		sql.binds[i].buffer_length = sql.lengths[i];
-		mysql_stmt_fetch_column(sql.stmt, &sql.binds[i], i, 0);
+		int fetched = mysql_stmt_fetch_column(sql.stmt, &sql.binds[i], i, 0);
+		sql.resultBuffer[i][sql.lengths[i]] = 0;
+		LOG_INFO("fetched = %d", fetched);
 	}
 	sql.currentRow++;
 	return 1;
@@ -131,6 +138,7 @@ char *sql_read_data_in_active_row(int column) {
 	if (column < 0 || column >= sql.columns)
 		return NULL;
 
+	LOG_INFO("Reading column %d, value %s", column, sql.resultBuffer[column]);
 	return sql.resultBuffer[column];
 }
 int sql_get_affected_rows() {

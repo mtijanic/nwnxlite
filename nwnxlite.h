@@ -7,6 +7,7 @@
 
 extern FILE *logfile;
 #define LOG_INIT(logname)   (logfile = fopen(logname, "w"))
+#define LOG_DEBUG(fmt, ...)  (fprintf(logfile, "[DEBUG] " fmt "\n", ##__VA_ARGS__), fflush(logfile))
 #define LOG_INFO(fmt, ...)  (fprintf(logfile, "[INFO]  " fmt "\n", ##__VA_ARGS__), fflush(logfile))
 #define LOG_ERROR(fmt, ...) (fprintf(logfile, "[ERROR] " fmt "\n", ##__VA_ARGS__), fflush(logfile))
 #define LOG_CLOSE()         (fclose(logfile))
@@ -26,10 +27,12 @@ typedef struct CExoString {
 } CExoString;
 
 static inline CExoString make_cexostr(const char *str) {
-	CExoString c;
+	CExoString c;// = malloc(sizeof(*c));
+
 	c.m_nBufferLength = strlen(str) + 1;
 	c.m_sString = malloc(c.m_nBufferLength);
 	strcpy(c.m_sString, str);
+	LOG_DEBUG("makestr: %s | %s ; %p | %p | %d", str, c.m_sString, str, c.m_sString, c.m_nBufferLength);
 	return c;
 }
 
