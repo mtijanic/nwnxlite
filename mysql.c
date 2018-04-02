@@ -106,10 +106,12 @@ int sql_execute_prepared_query() {
 	return 0;
 }
 int sql_ready_to_read_next_row() {
-	return (sql.affectedRows != -1) && (sql.currentRow != sql.totalRows);
+	return sql.stmt && (sql.affectedRows != -1) && (sql.currentRow != sql.totalRows);
 }
 int sql_read_next_row() {
-	
+	if (!sql.stmt)
+		return 0;
+
 	int fetchResult = mysql_stmt_fetch(sql.stmt);
 	if (fetchResult == MYSQL_NO_DATA) {
 		return 0;
@@ -135,8 +137,8 @@ int sql_read_next_row() {
 }
 
 char *sql_read_data_in_active_row(int column) {
-	if (column < 0 || column >= sql.columns)
-		return NULL;
+	if (!sql.stmt || column < 0 || column >= sql.columns)
+		return "";
 
 	LOG_INFO("Reading column %d, value %s", column, sql.resultBuffer[column]);
 	return sql.resultBuffer[column];

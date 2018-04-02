@@ -7,7 +7,7 @@
 
 extern FILE *logfile;
 #define LOG_INIT(logname)   (logfile = fopen(logname, "w"))
-#define LOG_DEBUG(fmt, ...)  (fprintf(logfile, "[DEBUG] " fmt "\n", ##__VA_ARGS__), fflush(logfile))
+#define LOG_DEBUG(fmt, ...) (fprintf(logfile, "[DEBUG] " fmt "\n", ##__VA_ARGS__), fflush(logfile))
 #define LOG_INFO(fmt, ...)  (fprintf(logfile, "[INFO]  " fmt "\n", ##__VA_ARGS__), fflush(logfile))
 #define LOG_ERROR(fmt, ...) (fprintf(logfile, "[ERROR] " fmt "\n", ##__VA_ARGS__), fflush(logfile))
 #define LOG_CLOSE()         (fclose(logfile))
