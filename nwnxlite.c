@@ -51,7 +51,8 @@ struct {
 	const char *cmd;
 	SetStringHandler handler;
 } set_string_handlers[] = {
-	{ "SQLExecDirect", SQLExecDirect}
+	{ "SQLExecDirect", SQLExecDirect},
+	{ "SetLogLevel", SetLogLevel }
 };
 struct {
 	const char *cmd;
