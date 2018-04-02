@@ -68,7 +68,7 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <Link>
-      <AdditionalDependencies>wsock32.lib;detours.lib;mysqlclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;detours.lib;mysqlclient.libmysqlclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)nwnxlite.dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\detours\lib;$(SolutionDir)lib\mysql\lib\vs14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
@@ -89,17 +89,18 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)lib\detours\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\detours\include;$(SolutionDir)lib\mysql\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WINDOWS;_USRDLL;TEST_EXPORTS;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;detours.lib;mysqlclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)nwnxlite.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\detours\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>core.map</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\detours\lib;$(SolutionDir)lib\mysql\lib\vs14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
