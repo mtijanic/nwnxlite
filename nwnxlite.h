@@ -6,9 +6,10 @@
 #include "string.h"
 
 extern FILE *logfile;
+extern int loglevel;
 #define LOG_INIT(logname)   (logfile = fopen(logname, "w"))
-#define LOG_DEBUG(fmt, ...) (fprintf(logfile, "[DEBUG] " fmt "\n", ##__VA_ARGS__), fflush(logfile))
-#define LOG_INFO(fmt, ...)  (fprintf(logfile, "[INFO]  " fmt "\n", ##__VA_ARGS__), fflush(logfile))
+#define LOG_DEBUG(fmt, ...) if (loglevel >= 2) { fprintf(logfile, "[DEBUG] " fmt "\n", ##__VA_ARGS__), fflush(logfile); } else
+#define LOG_INFO(fmt, ...)  if (loglevel >= 1) { fprintf(logfile, "[INFO]  " fmt "\n", ##__VA_ARGS__), fflush(logfile); } else
 #define LOG_ERROR(fmt, ...) (fprintf(logfile, "[ERROR] " fmt "\n", ##__VA_ARGS__), fflush(logfile))
 #define LOG_CLOSE()         (fclose(logfile))
 

@@ -52,7 +52,7 @@ void sql_destroy_prepared_query() {
 int sql_prepare_query(const char *query) {
 	LOG_INFO("SQL prepare query: %s", query);
 	if (sql.stmt) {
-		LOG_INFO("Destroying previous query");
+		LOG_DEBUG("Destroying previous query");
 		sql_destroy_prepared_query();
 	}
 
@@ -64,7 +64,7 @@ int sql_prepare_query(const char *query) {
 
 	if (!mysql_stmt_prepare(sql.stmt, query, strlen(query))) {
 		sql.paramCount = mysql_stmt_param_count(sql.stmt);
-		LOG_INFO("Detected %d parameters.", sql.paramCount);
+		LOG_DEBUG("Detected %d parameters.", sql.paramCount);
 		assert(sql.paramCount < count_of(sql.params));
 		return 1;
 	}
@@ -86,7 +86,7 @@ int sql_execute_prepared_query() {
 	}
 
 	if (!mysql_stmt_execute(sql.stmt)) {
-		LOG_INFO("Successful query");
+		LOG_DEBUG("Successful query");
 		sql.result = mysql_stmt_result_metadata(sql.stmt);
 		if (sql.result) {
 			sql.columns = mysql_num_fields(sql.result);
@@ -122,15 +122,16 @@ int sql_read_next_row() {
 	}
 
 	for (int i = 0; i < sql.columns; i++) {
+		sql.lengths[i] += 128;
 		sql.resultBuffer[i] = realloc(sql.resultBuffer[i], sql.lengths[i] + 1);
 		//assert(sql.resultBuffer[i]);
-		LOG_INFO("Column %d of %d, length %d; res: %p", i, sql.columns, sql.lengths[i], sql.resultBuffer[i]);
+		LOG_DEBUG("Column %d of %d, length %d; res: %p", i, sql.columns, sql.lengths[i], sql.resultBuffer[i]);
 		
 		sql.binds[i].buffer = sql.resultBuffer[i];
 		sql.binds[i].buffer_length = sql.lengths[i];
 		int fetched = mysql_stmt_fetch_column(sql.stmt, &sql.binds[i], i, 0);
 		sql.resultBuffer[i][sql.lengths[i]] = 0;
-		LOG_INFO("fetched = %d", fetched);
+		LOG_DEBUG("fetched = %d", fetched);
 	}
 	sql.currentRow++;
 	return 1;
@@ -140,7 +141,7 @@ char *sql_read_data_in_active_row(int column) {
 	if (!sql.stmt || column < 0 || column >= sql.columns)
 		return "";
 
-	LOG_INFO("Reading column %d, value %s", column, sql.resultBuffer[column]);
+	LOG_DEBUG("Reading column %d, value %s", column, sql.resultBuffer[column]);
 	return sql.resultBuffer[column];
 }
 int sql_get_affected_rows() {
