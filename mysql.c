@@ -141,8 +141,9 @@ char *sql_read_data_in_active_row(int column) {
 	if (!sql.stmt || column < 0 || column >= sql.columns)
 		return "";
 
-	LOG_DEBUG("Reading column %d, value %s", column, sql.resultBuffer[column]);
-	return sql.resultBuffer[column];
+	char *value = sql.resultBuffer[column] ? sql.resultBuffer[column] : "";
+	LOG_DEBUG("Reading column %d, value \"%s\"", column, value);
+	return value;
 }
 int sql_get_affected_rows() {
 	return sql.affectedRows;
