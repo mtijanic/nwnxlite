@@ -40,11 +40,8 @@ void SQLExecDirect(char *name, char *value);
 char *SQLFetch(char *name);
 char *SQLGetData(char *name);
 void SetLogLevel(char *name, char *value) {
-	switch (*value) {
-	case '1': loglevel = 1; break;
-	case '2': loglevel = 2; break;
-	case '0': loglevel - 0; break;
-	}
+	if (!sscanf(value, "%d", &loglevel))
+		LOG_ERROR("SetLogLevel failed for level %s, keeping old loglevel=%d", value, loglevel);
 }
 
 struct {
