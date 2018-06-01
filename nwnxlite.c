@@ -112,12 +112,31 @@ void __fastcall hook_SetString(CNWSScriptVarTable* thisPtr, int edx, CExoString*
 
 void init_nwn_hooks()
 {
-	// Offsets for 8166 nwserver.exe
-	// TODO: Load dynamically for auto updating
-	const uintptr_t NWNXEntryPoint_base = 0x0040B7B0;
-	const uintptr_t CNWSScriptVarTable__GetObject_base = 0x005A2A00;
-	const uintptr_t CNWSScriptVarTable__GetString_base = 0x005A2A60;
-	const uintptr_t CNWSScriptVarTable__SetString_base = 0x005A3280;
+	FILE *f = fopen("nwnxlite-offsets.txt", "r");
+	if (f == NULL)
+	{
+		LOG_ERROR("Can't find offsets file nwnxlite-offsets.txt");
+		return;
+	}
+
+	uintptr_t NWNXEntryPoint_base = 0;
+	uintptr_t CNWSScriptVarTable__GetObject_base = 0;
+	uintptr_t CNWSScriptVarTable__GetString_base = 0;
+	uintptr_t CNWSScriptVarTable__SetString_base = 0;
+
+	char line[2048];
+	while (fgets(line, sizeof(line), f)) {
+		sscanf(line, "NWNXEntryPoint=%x", &NWNXEntryPoint_base) ||
+			sscanf(line, "CNWSScriptVarTable__GetObject=%x", &CNWSScriptVarTable__GetObject_base) ||
+			sscanf(line, "CNWSScriptVarTable__GetString=%x", &CNWSScriptVarTable__GetString_base) ||
+			sscanf(line, "CNWSScriptVarTable__SetString=%x", &CNWSScriptVarTable__SetString_base);
+	}
+	fclose(f);
+
+	if (NWNXEntryPoint_base == 0) LOG_ERROR("NWNXEntryPoint offset not found");
+	if (CNWSScriptVarTable__GetObject_base == 0) LOG_ERROR("CNWSScriptVarTable__GetObject offset not found");
+	if (CNWSScriptVarTable__GetString_base == 0) LOG_ERROR("CNWSScriptVarTable__GetString offset not found");
+	if (CNWSScriptVarTable__SetString_base == 0) LOG_ERROR("CNWSScriptVarTable__SetString offset not found");
 
 	uintptr_t real = (uintptr_t)GetProcAddress(GetModuleHandle(NULL), "NWNXEntryPoint");
 	uintptr_t aslr_offset = real - NWNXEntryPoint_base;
