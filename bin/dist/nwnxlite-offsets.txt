@@ -1,0 +1,5 @@
+# Offsets for 8166
+NWNXEntryPoint=0x0040B7B0
+CNWSScriptVarTable__GetObject=0x005A2A00
+CNWSScriptVarTable__GetString=0x005A2A60
+CNWSScriptVarTable__SetString=0x005A3280

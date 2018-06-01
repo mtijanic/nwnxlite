@@ -138,6 +138,9 @@ void init_nwn_hooks()
 	if (CNWSScriptVarTable__GetString_base == 0) LOG_ERROR("CNWSScriptVarTable__GetString offset not found");
 	if (CNWSScriptVarTable__SetString_base == 0) LOG_ERROR("CNWSScriptVarTable__SetString offset not found");
 
+	LOG_INFO("Using offsets: NWNXEntryPoint=0x08%x; CNWSScriptVarTable__GetObject=0x%08x; CNWSScriptVarTable__GetString=0x%08x; CNWSScriptVarTable__SetString=0x%08x;",
+		NWNXEntryPoint_base, CNWSScriptVarTable__GetObject_base, CNWSScriptVarTable__GetString_base, CNWSScriptVarTable__SetString_base);
+
 	uintptr_t real = (uintptr_t)GetProcAddress(GetModuleHandle(NULL), "NWNXEntryPoint");
 	uintptr_t aslr_offset = real - NWNXEntryPoint_base;
 
