@@ -11,7 +11,13 @@
 #CNWSScriptVarTable__SetString=0x005A5940
 
 # Offsets for 8179 (v76)
+#NWNXEntryPoint=0x0040B810
+#CNWSScriptVarTable__GetObject=0x005A55A0
+#CNWSScriptVarTable__GetString=0x005A5600
+#CNWSScriptVarTable__SetString=0x005A5E20
+
+# Offsets for 8181 (v77)
 NWNXEntryPoint=0x0040B810
-CNWSScriptVarTable__GetObject=0x005A55A0
-CNWSScriptVarTable__GetString=0x005A5600
-CNWSScriptVarTable__SetString=0x005A5E20
+CNWSScriptVarTable__GetObject=0x005A7830
+CNWSScriptVarTable__GetString=0x005A7890
+CNWSScriptVarTable__SetString=0x005A80B0
