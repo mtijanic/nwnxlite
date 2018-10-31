@@ -10,3 +10,9 @@ Windows MySQL connector for NWN:EE
 ## Updating
 
 When a new version of NWN:EE is released, the bin/dist/offests.txt file is updated. Simply overwrite your old version with the new one when you update nwserver.exe
+
+# Support
+
+Best way to get help is to ask on the NWNX discord: https://discord.gg/hxTt8Fr
+
+For bug reports, file an issue on this project. There will be no further feature development, just bugfixing.
