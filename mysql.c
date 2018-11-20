@@ -44,7 +44,10 @@ int sql_is_connected() {
 
 
 void sql_destroy_prepared_query() {
-	mysql_free_result(sql.result);
+	if (sql.result) {
+		mysql_free_result(sql.result);
+		sql.result = NULL;
+	}
 	mysql_stmt_free_result(sql.stmt);
 	mysql_stmt_close(sql.stmt);
 	sql.stmt = NULL;
