@@ -21,3 +21,9 @@ NWNXEntryPoint=0x0040B810
 CNWSScriptVarTable__GetObject=0x005A7830
 CNWSScriptVarTable__GetString=0x005A7890
 CNWSScriptVarTable__SetString=0x005A80B0
+
+# Offsets for 8186 (v78)
+NWNXEntryPoint=0x0040C690
+CNWSScriptVarTable__GetObject=0x005DDF30
+CNWSScriptVarTable__GetString=0x005DDF90
+CNWSScriptVarTable__SetString=0x005DE930
