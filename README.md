@@ -1,6 +1,10 @@
 # nwnxlite
 Windows MySQL connector for NWN:EE
 
+# Supported versions
+
+nwnxlite supports only NWN:EE versions up to 8186 (the last 32bit build). At this time nwnxlite does not support the 64bit version of the game. See github.com/nwnxee/unified for NWNX:EE and ways to run it on Windows (Docker and WSL).
+
 # Quick start guide:
 
 - Copy everything from bin/dist/ into the folder where your nwserver.exe resides
